@@ -18,16 +18,20 @@ const ImageSelector = ({ onSelectImage, selectedImage }: ImageSelectorProps) => 
   const [searchResults, setSearchResults] = useState<ImageSearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
 
+  // Load some default images when the component mounts
+  const popularSearchTerms = ["social media", "technology", "business", "nature", "workspace"];
+  const randomDefaultTerm = popularSearchTerms[Math.floor(Math.random() * popularSearchTerms.length)];
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!searchQuery.trim()) return;
+    const query = searchQuery.trim() || randomDefaultTerm;
     
     setIsSearching(true);
     setShowResults(true);
     
     try {
-      const results = await searchImages(searchQuery);
+      const results = await searchImages(query);
       setSearchResults(results);
     } finally {
       setIsSearching(false);
