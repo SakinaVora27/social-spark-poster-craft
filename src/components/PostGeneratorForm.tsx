@@ -11,6 +11,7 @@ import { templates, platforms, promptTemplates } from "@/data/templates";
 import { GenerateContentRequest, generateContent } from "@/services/geminiApi";
 import { PostContent, PostTemplate, SocialPlatform } from "@/types/post";
 import { toast } from "sonner";
+import ImageSelector from "@/components/ImageSelector";
 
 interface PostGeneratorFormProps {
   onGeneratePost: (post: PostContent) => void;
@@ -23,6 +24,7 @@ const PostGeneratorForm = ({ onGeneratePost }: PostGeneratorFormProps) => {
   const [promptType, setPromptType] = useState("custom");
   const [customPrompt, setCustomPrompt] = useState("");
   const [selectedPromptTemplate, setSelectedPromptTemplate] = useState(promptTemplates[0]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [promptParams, setPromptParams] = useState({
     topic: "",
     audience: "",
@@ -52,6 +54,11 @@ const PostGeneratorForm = ({ onGeneratePost }: PostGeneratorFormProps) => {
       finalPrompt = `${customPrompt} Make sure the post is formatted for ${selectedPlatform.name} and is ready to be published as-is.`;
     }
     
+    // If an image is selected, ask the AI to make the text relevant to the image
+    if (selectedImage) {
+      finalPrompt += ` Please make the content relevant to the accompanying image that I've selected.`;
+    }
+    
     try {
       setIsGenerating(true);
       
@@ -67,7 +74,8 @@ const PostGeneratorForm = ({ onGeneratePost }: PostGeneratorFormProps) => {
         onGeneratePost({
           text: response.content.trim(),
           template: selectedTemplate,
-          platform: selectedPlatform
+          platform: selectedPlatform,
+          image: selectedImage || undefined
         });
         toast.success("Post generated successfully!");
       }
@@ -135,6 +143,11 @@ const PostGeneratorForm = ({ onGeneratePost }: PostGeneratorFormProps) => {
               </Select>
             </div>
           </div>
+          
+          <ImageSelector 
+            onSelectImage={setSelectedImage}
+            selectedImage={selectedImage}
+          />
           
           <Tabs defaultValue="custom" value={promptType} onValueChange={setPromptType}>
             <TabsList className="mb-4">

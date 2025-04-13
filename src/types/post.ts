@@ -21,4 +21,17 @@ export interface PostContent {
   text: string;
   template: PostTemplate;
   platform: SocialPlatform;
+  image?: string; // URL to the image
+}
+
+export interface ImageSearchResult {
+  id: string;
+  urls: {
+    small: string;
+    regular: string;
+  };
+  alt_description: string;
+  user: {
+    name: string;
+  };
 }

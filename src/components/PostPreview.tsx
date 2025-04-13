@@ -1,9 +1,9 @@
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { PostContent } from "@/types/post";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Clipboard, Download, Share2, Twitter, Facebook, Linkedin, Instagram } from "lucide-react";
+import { Clipboard, Share2, Twitter, Facebook, Linkedin, Instagram } from "lucide-react";
 import { toast } from "sonner";
 
 interface PostPreviewProps {
@@ -59,20 +59,33 @@ const PostPreview = ({ post }: PostPreviewProps) => {
         <CardContent className="p-0">
           <div 
             ref={contentRef}
-            className="p-8 min-h-[200px] max-h-[400px] overflow-y-auto" 
-            style={{
-              ...getBackgroundStyle(),
-              color: post.template.textColor,
-              fontFamily: post.template.fontFamily
-            }}
+            className="flex flex-col" 
           >
-            {post.text ? (
-              post.text.split('\n').map((paragraph, index) => (
-                <p key={index} className="mb-3">{paragraph}</p>
-              ))
-            ) : (
-              <p className="text-gray-400 italic">Generated content will appear here...</p>
+            {post.image && (
+              <div className="w-full">
+                <img 
+                  src={post.image} 
+                  alt="Post image" 
+                  className="w-full object-cover max-h-[300px]"
+                />
+              </div>
             )}
+            <div 
+              className="p-8 min-h-[200px] max-h-[400px] overflow-y-auto" 
+              style={{
+                ...getBackgroundStyle(),
+                color: post.template.textColor,
+                fontFamily: post.template.fontFamily
+              }}
+            >
+              {post.text ? (
+                post.text.split('\n').map((paragraph, index) => (
+                  <p key={index} className="mb-3">{paragraph}</p>
+                ))
+              ) : (
+                <p className="text-gray-400 italic">Generated content will appear here...</p>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
